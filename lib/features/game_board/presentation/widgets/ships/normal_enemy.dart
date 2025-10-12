@@ -1,3 +1,4 @@
+import 'package:flame/collisions.dart';
 import 'package:flame/components.dart';
 import 'package:flutter/material.dart';
 import 'package:galaxy_defense/features/game_board/presentation/pages/game_board_page.dart';
@@ -7,12 +8,14 @@ class NormalEnemy extends PositionComponent with HasGameReference<GalaxyDefenseG
   static const double normalEnemySize = 30;
   static const double speed = 150;
   static const double stopDistance = 80;
+  int currentHealthPoints = 1;
 
   NormalEnemy({super.position}) : super(size: Vector2(normalEnemySize, normalEnemySize), anchor: Anchor.center);
 
   static final _paint = Paint()
     ..color = Colors.redAccent
-    ..style = PaintingStyle.fill;
+    ..style = PaintingStyle.stroke
+    ..strokeWidth = 2.0;
 
   @override
   void render(Canvas canvas) {
@@ -25,6 +28,12 @@ class NormalEnemy extends PositionComponent with HasGameReference<GalaxyDefenseG
       ..close();
 
     canvas.drawPath(path, _paint);
+  }
+
+  @override
+  Future<void> onLoad() async {
+    await super.onLoad();
+    add(RectangleHitbox());
   }
 
   @override
@@ -46,5 +55,17 @@ class NormalEnemy extends PositionComponent with HasGameReference<GalaxyDefenseG
       playerShip.takeDamage(1);
       removeFromParent();
     }
+  }
+
+  void takeDamage(int damage) {
+    currentHealthPoints -= damage;
+    if (currentHealthPoints <= 0) {
+      destroy();
+    }
+  }
+
+  void destroy() {
+    game.onEnemyDestroyed();
+    removeFromParent();
   }
 }

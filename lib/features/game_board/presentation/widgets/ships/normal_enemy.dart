@@ -42,7 +42,9 @@ class NormalEnemy extends PositionComponent with HasGameReference<GalaxyDefenseG
       lookAt(playerShip.position);
       position += direction * (speed * dt);
     } else {
-      // Hier könnte später z. B. ein Angriff stattfinden
+      // Angriff von Gegner auf Spieler
+      playerShip.takeDamage(1);
+      removeFromParent();
     }
   }
 }

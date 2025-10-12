@@ -4,6 +4,9 @@ import 'package:flutter/material.dart';
 import '../../pages/game_board_page.dart';
 
 class PlayerShip extends PositionComponent with HasGameReference<GalaxyDefenseGame> {
+  int maxHealthPoints = 5;
+  int currentHealthPoints = 5;
+
   static final _paintPlayerShip = Paint()
     ..color = Colors.cyanAccent
     ..style = PaintingStyle.fill;
@@ -28,5 +31,16 @@ class PlayerShip extends PositionComponent with HasGameReference<GalaxyDefenseGa
     canvas.drawCircle(Offset(size.x / 2, size.y / 2), 60, _paintPlayerShipShield);
 
     canvas.drawPath(path, _paintPlayerShip);
+  }
+
+  void takeDamage(int amount) {
+    currentHealthPoints -= amount;
+    if (currentHealthPoints <= 0) {
+      destroy();
+    }
+  }
+
+  void destroy() {
+    removeFromParent();
   }
 }

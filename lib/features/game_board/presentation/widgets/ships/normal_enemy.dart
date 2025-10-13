@@ -1,34 +1,25 @@
 import 'package:flame/collisions.dart';
 import 'package:flame/components.dart';
 import 'package:flutter/material.dart';
-import 'package:galaxy_defense/features/game_board/presentation/pages/game_board_page.dart';
-import 'package:galaxy_defense/features/game_board/presentation/widgets/ships/playership.dart';
+import 'package:galaxy_defense/features/game_board/presentation/widgets/ships/player_ship.dart';
+import 'package:galaxy_defense/features/game_board/presentation/widgets/ships/ship.dart';
 
-class NormalEnemy extends PositionComponent with HasGameReference<GalaxyDefenseGame> {
+class NormalEnemy extends Ship {
   static const double normalEnemySize = 30;
-  static const double speed = 150;
-  static const double stopDistance = 80;
-  int currentHealthPoints = 1;
 
-  NormalEnemy({super.position}) : super(size: Vector2(normalEnemySize, normalEnemySize), anchor: Anchor.center);
-
-  static final _paint = Paint()
+  static final _paintNormalEnemy = Paint()
     ..color = Colors.redAccent
     ..style = PaintingStyle.stroke
     ..strokeWidth = 2.0;
 
-  @override
-  void render(Canvas canvas) {
-    super.render(canvas);
-
-    final path = Path()
-      ..moveTo(size.x / 2, 0)
-      ..lineTo(0, size.y)
-      ..lineTo(size.x, size.y)
-      ..close();
-
-    canvas.drawPath(path, _paint);
-  }
+  NormalEnemy({required super.size})
+      : super(
+          maxHealth: 1,
+          maxShield: 0,
+          damage: 1,
+          speed: 100,
+          fireDistance: 80,
+        );
 
   @override
   Future<void> onLoad() async {
@@ -37,35 +28,39 @@ class NormalEnemy extends PositionComponent with HasGameReference<GalaxyDefenseG
   }
 
   @override
-  void update(double dt) {
-    super.update(dt);
+  void renderShip(Canvas canvas) {
+    final path = Path()
+      ..moveTo(size.x / 2, 0)
+      ..lineTo(0, size.y)
+      ..lineTo(size.x, size.y)
+      ..close();
 
+    canvas.drawPath(path, _paintNormalEnemy);
+  }
+
+  @override
+  void updateShip(double dt) {
     final PlayerShip playerShip = game.playerShip;
 
     final Vector2 toPlayer = playerShip.position - position;
     final double distanceToPlayer = toPlayer.length;
 
-    if (distanceToPlayer > stopDistance) {
+    if (distanceToPlayer > fireDistance) {
       // Normalisieren, um Richtungseinheitsvektor zu bekommen
       final Vector2 direction = toPlayer.normalized();
       lookAt(playerShip.position);
       position += direction * (speed * dt);
     } else {
       // Angriff von Gegner auf Spieler
-      playerShip.takeDamage(1);
+      playerShip.takeDamage(damage);
       removeFromParent();
     }
   }
 
-  void takeDamage(int damage) {
-    currentHealthPoints -= damage;
-    if (currentHealthPoints <= 0) {
-      destroy();
-    }
-  }
-
-  void destroy() {
+  @override
+  void destroyShip() {
+    super.destroyShip();
     game.onEnemyDestroyed();
-    removeFromParent();
+    // TODO Animationen hinzufügen
   }
 }

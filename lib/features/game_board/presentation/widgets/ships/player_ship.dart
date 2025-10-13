@@ -1,14 +1,10 @@
-import 'package:flame/collisions.dart';
-import 'package:flame/components.dart';
 import 'package:flutter/material.dart';
+import 'package:galaxy_defense/features/game_board/presentation/widgets/ships/ship.dart';
 
-import '../../pages/game_board_page.dart';
-import '../game_elements/laser_shot.dart';
+import '../game_elements/projectile_shot.dart';
 import 'normal_enemy.dart';
 
-class PlayerShip extends PositionComponent with HasGameReference<GalaxyDefenseGame>, CollisionCallbacks {
-  int maxHealthPoints = 5;
-  int currentHealthPoints = 5;
+class PlayerShip extends Ship {
   double shootTimer = 0.0;
   final double shootInterval = 0.5;
 
@@ -22,12 +18,17 @@ class PlayerShip extends PositionComponent with HasGameReference<GalaxyDefenseGa
     ..style = PaintingStyle.stroke
     ..strokeWidth = 1.0;
 
-  PlayerShip({super.position, super.size}) : super(anchor: Anchor.center);
+  PlayerShip({required super.size})
+      : super(
+          maxHealth: 5,
+          maxShield: 5,
+          damage: 1,
+          speed: 0,
+          fireDistance: 0,
+        );
 
   @override
-  void render(Canvas canvas) {
-    super.render(canvas);
-
+  void renderShip(Canvas canvas) {
     final path = Path()
       ..moveTo(size.x / 2, 0)
       ..lineTo(0, size.y)
@@ -35,14 +36,11 @@ class PlayerShip extends PositionComponent with HasGameReference<GalaxyDefenseGa
       ..close();
 
     canvas.drawCircle(Offset(size.x / 2, size.y / 2), 60, _paintPlayerShipShield);
-
     canvas.drawPath(path, _paintPlayerShip);
   }
 
   @override
-  void update(double dt) {
-    super.update(dt);
-
+  void updateShip(double dt) {
     shootTimer += dt;
     if (shootTimer >= shootInterval) {
       shootTimer = 0.0;
@@ -55,32 +53,25 @@ class PlayerShip extends PositionComponent with HasGameReference<GalaxyDefenseGa
     }
   }
 
-  void shootAtNearestEnemy(List<NormalEnemy> enemies) {
-    // Falls die Liste leer ist, abbrechen
-    if (enemies.isEmpty) return;
+  @override
+  void destroyShip() {
+    super.destroyShip();
+    // TODO Animationen hinzufügen
+  }
 
+  void shootAtNearestEnemy(List<Ship> enemies) {
+    if (enemies.isEmpty) {
+      return;
+    }
     // Nächsten Gegner finden
-    enemies.sort(
-      (a, b) => (a.position - position).length.compareTo((b.position - position).length),
-    );
+    enemies.sort((a, b) => (a.position - position).length.compareTo((b.position - position).length));
     final target = enemies.first;
 
     // Richtung zum Gegner
     final dir = (target.position - position).normalized();
 
     // Laser erzeugen und hinzufügen
-    final laser = LaserShot(startPosition: position.clone(), direction: dir);
+    final laser = ProjectileShot(startPosition: position.clone(), direction: dir);
     game.add(laser);
-  }
-
-  void takeDamage(int damage) {
-    currentHealthPoints -= damage;
-    if (currentHealthPoints <= 0) {
-      destroy();
-    }
-  }
-
-  void destroy() {
-    removeFromParent();
   }
 }

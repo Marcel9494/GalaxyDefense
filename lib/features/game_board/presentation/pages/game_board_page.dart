@@ -6,7 +6,7 @@ import 'package:galaxy_defense/features/game_board/presentation/widgets/game_ele
 
 import '../widgets/deco/linear_indicator.dart';
 import '../widgets/ships/normal_enemy.dart';
-import '../widgets/ships/playership.dart';
+import '../widgets/ships/player_ship.dart';
 
 class GameBoardPage extends StatefulWidget {
   const GameBoardPage({super.key});
@@ -45,14 +45,14 @@ class _GameBoardPageState extends State<GameBoardPage> {
                       Column(
                         children: [
                           LinearIndicator(
-                            maxValue: game.playerShip.maxHealthPoints,
-                            currentValue: game.playerShip.currentHealthPoints,
+                            maxValue: game.playerShip.maxHealth,
+                            currentValue: game.playerShip.currentHealth,
                             color: Colors.green,
                           ),
                           SizedBox(height: 6.0),
                           LinearIndicator(
-                            maxValue: game.playerShip.maxHealthPoints,
-                            currentValue: game.playerShip.currentHealthPoints,
+                            maxValue: game.playerShip.maxShield,
+                            currentValue: game.playerShip.currentShield,
                             color: Colors.blue,
                           ),
                         ],
@@ -127,7 +127,7 @@ class GalaxyDefenseGame extends FlameGame with HasCollisionDetection {
     add(
       SpawnComponent(
         factory: (index) {
-          return NormalEnemy();
+          return NormalEnemy(size: Vector2(20, 20));
         },
         period: 0.45,
         area: Rectangle.fromLTWH(0, -NormalEnemy.normalEnemySize, size.x, NormalEnemy.normalEnemySize),
@@ -138,7 +138,7 @@ class GalaxyDefenseGame extends FlameGame with HasCollisionDetection {
   @override
   void update(double dt) {
     super.update(dt);
-    playerHealthNotifier.value = playerShip.currentHealthPoints;
+    playerHealthNotifier.value = playerShip.currentHealth;
   }
 
   void onEnemyDestroyed() {

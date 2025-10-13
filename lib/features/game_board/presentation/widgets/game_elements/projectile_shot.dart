@@ -3,15 +3,15 @@ import 'package:flame/components.dart';
 import 'package:flutter/material.dart';
 
 import '../../pages/game_board_page.dart';
-import '../ships/normal_enemy.dart';
+import '../ships/ship.dart';
 
-class LaserShot extends PositionComponent with HasGameReference<GalaxyDefenseGame>, CollisionCallbacks {
+class ProjectileShot extends PositionComponent with HasGameReference<GalaxyDefenseGame>, CollisionCallbacks {
   final Vector2 direction;
   final double speed = 300;
   bool destroyed = false;
   static final _paintLaserShot = Paint()..color = Colors.redAccent;
 
-  LaserShot({
+  ProjectileShot({
     required Vector2 startPosition,
     required this.direction,
   }) : super(
@@ -49,9 +49,9 @@ class LaserShot extends PositionComponent with HasGameReference<GalaxyDefenseGam
   void onCollision(Set<Vector2> intersectionPoints, PositionComponent other) {
     super.onCollision(intersectionPoints, other);
 
-    if (other is NormalEnemy && !destroyed) {
+    if (other is Ship && !destroyed) {
       destroyed = true;
-      other.destroy();
+      other.destroyShip();
       removeFromParent();
     }
   }

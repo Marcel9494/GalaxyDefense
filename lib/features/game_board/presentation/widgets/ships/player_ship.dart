@@ -56,6 +56,8 @@ class PlayerShip extends Ship {
   @override
   void destroyShip() {
     super.destroyShip();
+    game.pauseEngine();
+    game.overlays.add('GameOverDialog');
     // TODO Animationen hinzufügen
   }
 

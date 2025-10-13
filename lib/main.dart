@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:galaxy_defense/core/consts/route_consts.dart';
-import 'package:galaxy_defense/features/player/presentation/pages/player_page.dart';
+import 'package:galaxy_defense/features/player/presentation/pages/main_page.dart';
 
 import 'core/theme/theme_data.dart';
 import 'features/game_board/presentation/pages/game_board_page.dart';
@@ -19,8 +19,9 @@ class MyApp extends StatelessWidget {
       themeMode: ThemeMode.dark,
       debugShowCheckedModeBanner: false,
       theme: themeData,
-      home: const PlayerPage(),
+      home: const MainPage(),
       routes: {
+        mainRoute: (context) => const MainPage(),
         gameBoardRoute: (context) => const GameBoardPage(),
       },
     );

@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:galaxy_defense/features/game_board/presentation/widgets/game_elements/attack_line.dart';
 
 import '../widgets/deco/linear_indicator.dart';
+import '../widgets/dialogs/game_over_dialog.dart';
 import '../widgets/ships/normal_enemy.dart';
 import '../widgets/ships/player_ship.dart';
 
@@ -30,6 +31,11 @@ class _GameBoardPageState extends State<GameBoardPage> {
             flex: 3,
             child: GameWidget(
               game: game,
+              overlayBuilderMap: {
+                'GameOverDialog': (context, game) {
+                  return GameOverDialog(game: game as GalaxyDefenseGame);
+                },
+              },
             ),
           ),
           Flexible(
@@ -75,11 +81,21 @@ class _GameBoardPageState extends State<GameBoardPage> {
                               ),
                             ],
                           ),
-                          ValueListenableBuilder<int>(
-                            valueListenable: game.killCountNotifier,
-                            builder: (context, kills, _) {
-                              return Text('$kills', style: const TextStyle(color: Colors.white, fontSize: 16));
-                            },
+                          Row(
+                            children: [
+                              ValueListenableBuilder<int>(
+                                valueListenable: game.killCountNotifier,
+                                builder: (context, kills, _) {
+                                  return Text('$kills', style: const TextStyle(color: Colors.white, fontSize: 16));
+                                },
+                              ),
+                              ValueListenableBuilder<int>(
+                                valueListenable: game.beskarNotifier,
+                                builder: (context, beskar, _) {
+                                  return Text('Beskar: $beskar', style: const TextStyle(color: Colors.white, fontSize: 16));
+                                },
+                              ),
+                            ],
                           ),
                         ],
                       ),
@@ -101,20 +117,31 @@ class GalaxyDefenseGame extends FlameGame with HasCollisionDetection {
 
   int experiencePoints = 0;
   int credits = 0;
+  int beskar = 0;
   int enemiesDestroyed = 0;
 
   final ValueNotifier<int> xpNotifier = ValueNotifier<int>(0);
   final ValueNotifier<int> creditsNotifier = ValueNotifier<int>(0);
+  final ValueNotifier<int> beskarNotifier = ValueNotifier<int>(0);
   final ValueNotifier<int> killCountNotifier = ValueNotifier<int>(0);
   final ValueNotifier<int> playerHealthNotifier = ValueNotifier<int>(5);
 
-  bool isPlayerOnCooldown = false;
+  bool isPlayerShipOnCooldown = false;
   final double attackCooldown = 0.5;
 
   @override
   Future<void> onLoad() async {
     await super.onLoad();
+    createGameComponents();
+  }
 
+  @override
+  void update(double dt) {
+    super.update(dt);
+    playerHealthNotifier.value = playerShip.currentHealth;
+  }
+
+  void createGameComponents() {
     add(playerShip);
     playerShip.position = Vector2(
       size.x / 2,
@@ -129,25 +156,43 @@ class GalaxyDefenseGame extends FlameGame with HasCollisionDetection {
         factory: (index) {
           return NormalEnemy(size: Vector2(20, 20));
         },
-        period: 0.45,
+        period: 0.35,
         area: Rectangle.fromLTWH(0, -NormalEnemy.normalEnemySize, size.x, NormalEnemy.normalEnemySize),
       ),
     );
-  }
 
-  @override
-  void update(double dt) {
-    super.update(dt);
-    playerHealthNotifier.value = playerShip.currentHealth;
+    playerHealthNotifier.value = playerShip.maxHealth;
+    isPlayerShipOnCooldown = false;
   }
 
   void onEnemyDestroyed() {
     experiencePoints += 10;
     credits += 2;
+    beskar++;
     enemiesDestroyed++;
 
     xpNotifier.value = experiencePoints;
     creditsNotifier.value = credits;
+    beskarNotifier.value = beskar;
     killCountNotifier.value = enemiesDestroyed;
+  }
+
+  void resetGame() {
+    experiencePoints = 0;
+    credits = 0;
+    beskar = 0;
+    enemiesDestroyed = 0;
+
+    xpNotifier.value = 0;
+    creditsNotifier.value = 0;
+    beskarNotifier.value = 0;
+    killCountNotifier.value = 0;
+
+    removeAll(children.toList());
+
+    playerShip = PlayerShip(size: Vector2(50, 50));
+    createGameComponents();
+
+    resumeEngine();
   }
 }

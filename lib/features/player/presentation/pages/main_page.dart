@@ -1,14 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:galaxy_defense/core/consts/route_consts.dart';
 
-class PlayerPage extends StatefulWidget {
-  const PlayerPage({super.key});
+class MainPage extends StatefulWidget {
+  const MainPage({super.key});
 
   @override
-  State<PlayerPage> createState() => _PlayerPageState();
+  State<MainPage> createState() => _MainPageState();
 }
 
-class _PlayerPageState extends State<PlayerPage> {
+class _MainPageState extends State<MainPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(

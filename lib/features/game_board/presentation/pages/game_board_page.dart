@@ -2,7 +2,11 @@ import 'package:flame/components.dart';
 import 'package:flame/experimental.dart';
 import 'package:flame/game.dart';
 import 'package:flutter/material.dart';
+import 'package:galaxy_defense/features/game_board/presentation/widgets/cards/cockpit_upgrade_card.dart';
 import 'package:galaxy_defense/features/game_board/presentation/widgets/game_elements/attack_line.dart';
+import 'package:galaxy_defense/features/game_board/presentation/widgets/grid_view/cockpit_upgrade_grid_view.dart';
+import 'package:galaxy_defense/features/game_board/presentation/widgets/tabbar/upgrade_tab.dart';
+import 'package:hugeicons/hugeicons.dart';
 
 import '../widgets/deco/linear_indicator.dart';
 import '../widgets/dialogs/game_over_dialog.dart';
@@ -16,19 +20,30 @@ class GameBoardPage extends StatefulWidget {
   State<GameBoardPage> createState() => _GameBoardPageState();
 }
 
-class _GameBoardPageState extends State<GameBoardPage> {
+class _GameBoardPageState extends State<GameBoardPage> with TickerProviderStateMixin {
+  late final TabController _cockpitTabController;
+
+  @override
+  void initState() {
+    super.initState();
+    _cockpitTabController = TabController(length: 2, vsync: this);
+  }
+
+  @override
+  void dispose() {
+    _cockpitTabController.dispose();
+    super.dispose();
+  }
+
   @override
   Widget build(BuildContext context) {
     final game = GalaxyDefenseGame();
     return Scaffold(
-      appBar: AppBar(
-        title: Text('Galaxy Defense'),
-      ),
       body: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Expanded(
-            flex: 3,
+            flex: 5,
             child: GameWidget(
               game: game,
               overlayBuilderMap: {
@@ -39,70 +54,103 @@ class _GameBoardPageState extends State<GameBoardPage> {
             ),
           ),
           Flexible(
-            flex: 2,
+            flex: 4,
             fit: FlexFit.loose,
-            child: Padding(
-              padding: const EdgeInsets.all(8.0),
-              child: ValueListenableBuilder<int>(
-                valueListenable: game.playerHealthNotifier,
-                builder: (context, value, _) {
-                  return Row(
-                    children: [
-                      Column(
+            child: ValueListenableBuilder<int>(
+              valueListenable: game.playerHealthNotifier,
+              builder: (context, value, _) {
+                return Column(
+                  children: [
+                    Row(
+                      children: [
+                        Column(
+                          children: [
+                            LinearIndicator(
+                              maxValue: game.playerShip.maxHealth,
+                              currentValue: game.playerShip.currentHealth,
+                              color: Colors.green,
+                            ),
+                            SizedBox(height: 6.0),
+                            LinearIndicator(
+                              maxValue: game.playerShip.maxShield,
+                              currentValue: game.playerShip.currentShield,
+                              color: Colors.blue,
+                            ),
+                          ],
+                        ),
+                        Column(
+                          children: [
+                            Row(
+                              children: [
+                                ValueListenableBuilder<int>(
+                                  valueListenable: game.xpNotifier,
+                                  builder: (context, xp, _) {
+                                    return Text('$xp XP', style: const TextStyle(color: Colors.white, fontSize: 16));
+                                  },
+                                ),
+                                ValueListenableBuilder<int>(
+                                  valueListenable: game.creditsNotifier,
+                                  builder: (context, credits, _) {
+                                    return Text('Credits: $credits', style: const TextStyle(color: Colors.white, fontSize: 16));
+                                  },
+                                ),
+                              ],
+                            ),
+                            Row(
+                              children: [
+                                ValueListenableBuilder<int>(
+                                  valueListenable: game.killCountNotifier,
+                                  builder: (context, kills, _) {
+                                    return Text('$kills', style: const TextStyle(color: Colors.white, fontSize: 16));
+                                  },
+                                ),
+                                ValueListenableBuilder<int>(
+                                  valueListenable: game.beskarNotifier,
+                                  builder: (context, beskar, _) {
+                                    return Text('Beskar: $beskar', style: const TextStyle(color: Colors.white, fontSize: 16));
+                                  },
+                                ),
+                              ],
+                            ),
+                          ],
+                        ),
+                      ],
+                    ),
+                    Expanded(
+                      child: Column(
                         children: [
-                          LinearIndicator(
-                            maxValue: game.playerShip.maxHealth,
-                            currentValue: game.playerShip.currentHealth,
-                            color: Colors.green,
+                          TabBar(
+                            controller: _cockpitTabController,
+                            indicatorColor: Colors.cyanAccent,
+                            labelColor: Colors.cyanAccent,
+                            tabs: const <Widget>[
+                              UpgradeTab(title: 'Angriff', hugeIcon: HugeIcons.strokeRoundedRocket),
+                              UpgradeTab(title: 'Verteidigung', hugeIcon: HugeIcons.strokeRoundedShield02),
+                            ],
                           ),
-                          SizedBox(height: 6.0),
-                          LinearIndicator(
-                            maxValue: game.playerShip.maxShield,
-                            currentValue: game.playerShip.currentShield,
-                            color: Colors.blue,
+                          Expanded(
+                            child: TabBarView(
+                              controller: _cockpitTabController,
+                              children: <Widget>[
+                                CockpitUpgradeGridView(
+                                  upgradeCards: [
+                                    CockpitUpgradeCard(title: 'Projektilschaden', currentValue: 1.0, nextValue: 2.0, upgradeCost: 10),
+                                  ],
+                                ),
+                                CockpitUpgradeGridView(
+                                  upgradeCards: [
+                                    CockpitUpgradeCard(title: 'Hülle', currentValue: 5.0, nextValue: 10.0, upgradeCost: 20),
+                                  ],
+                                ),
+                              ],
+                            ),
                           ),
                         ],
                       ),
-                      Column(
-                        children: [
-                          Row(
-                            children: [
-                              ValueListenableBuilder<int>(
-                                valueListenable: game.xpNotifier,
-                                builder: (context, xp, _) {
-                                  return Text('$xp XP', style: const TextStyle(color: Colors.white, fontSize: 16));
-                                },
-                              ),
-                              ValueListenableBuilder<int>(
-                                valueListenable: game.creditsNotifier,
-                                builder: (context, credits, _) {
-                                  return Text('Credits: $credits', style: const TextStyle(color: Colors.white, fontSize: 16));
-                                },
-                              ),
-                            ],
-                          ),
-                          Row(
-                            children: [
-                              ValueListenableBuilder<int>(
-                                valueListenable: game.killCountNotifier,
-                                builder: (context, kills, _) {
-                                  return Text('$kills', style: const TextStyle(color: Colors.white, fontSize: 16));
-                                },
-                              ),
-                              ValueListenableBuilder<int>(
-                                valueListenable: game.beskarNotifier,
-                                builder: (context, beskar, _) {
-                                  return Text('Beskar: $beskar', style: const TextStyle(color: Colors.white, fontSize: 16));
-                                },
-                              ),
-                            ],
-                          ),
-                        ],
-                      ),
-                    ],
-                  );
-                },
-              ),
+                    ),
+                  ],
+                );
+              },
             ),
           ),
         ],

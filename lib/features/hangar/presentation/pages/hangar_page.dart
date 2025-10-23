@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:hugeicons/hugeicons.dart';
 
+import '../../../../l10n/app_localizations.dart';
 import '../../../game_board/presentation/widgets/tabbar/upgrade_tab.dart';
 import '../widgets/cards/hangar_upgrade_card.dart';
 
@@ -28,6 +29,7 @@ class _HangarPageState extends State<HangarPage> with TickerProviderStateMixin {
 
   @override
   Widget build(BuildContext context) {
+    final t = AppLocalizations.of(context);
     return Column(
       children: [
         TabBar(
@@ -35,21 +37,21 @@ class _HangarPageState extends State<HangarPage> with TickerProviderStateMixin {
           indicatorColor: Colors.cyanAccent,
           labelColor: Colors.cyanAccent,
           tabs: <Widget>[
-            UpgradeTab(title: 'Angriff', hugeIcon: HugeIcons.strokeRoundedRocket),
-            UpgradeTab(title: 'Verteidigung', hugeIcon: HugeIcons.strokeRoundedShield02),
-            UpgradeTab(title: 'Fähigkeiten', hugeIcon: HugeIcons.strokeRoundedChip),
+            UpgradeTab(title: t.translate('attack'), hugeIcon: HugeIcons.strokeRoundedRocket),
+            UpgradeTab(title: t.translate('defense'), hugeIcon: HugeIcons.strokeRoundedShield02),
+            UpgradeTab(title: t.translate('skills'), hugeIcon: HugeIcons.strokeRoundedChip),
           ],
         ),
         Expanded(
           child: TabBarView(
             controller: _hangarTabController,
             children: <Widget>[
-              Center(child: Text("Angriff")),
+              Center(child: Text(t.translate('attack'))),
               ListView.builder(
                 itemCount: 2,
                 itemBuilder: (BuildContext context, int index) {
                   return HangarUpgradeCard(
-                    title: "Hülle",
+                    title: t.translate('covering'),
                     level: 1,
                     currentValue: 5,
                     nextValue: 10,
@@ -57,7 +59,7 @@ class _HangarPageState extends State<HangarPage> with TickerProviderStateMixin {
                   );
                 },
               ),
-              Center(child: Text("Fähigkeiten")),
+              Center(child: Text(t.translate('skills'))),
             ],
           ),
         ),

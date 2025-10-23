@@ -8,6 +8,8 @@ import 'package:galaxy_defense/features/game_board/presentation/widgets/grid_vie
 import 'package:galaxy_defense/features/game_board/presentation/widgets/tabbar/upgrade_tab.dart';
 import 'package:hugeicons/hugeicons.dart';
 
+import '../../../../core/consts/dialog_consts.dart';
+import '../../../../l10n/app_localizations.dart';
 import '../widgets/deco/linear_indicator.dart';
 import '../widgets/dialogs/game_over_dialog.dart';
 import '../widgets/ships/normal_enemy.dart';
@@ -38,6 +40,7 @@ class _GameBoardPageState extends State<GameBoardPage> with TickerProviderStateM
   @override
   Widget build(BuildContext context) {
     final game = GalaxyDefenseGame();
+    final t = AppLocalizations.of(context);
     return Scaffold(
       body: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -47,7 +50,7 @@ class _GameBoardPageState extends State<GameBoardPage> with TickerProviderStateM
             child: GameWidget(
               game: game,
               overlayBuilderMap: {
-                'GameOverDialog': (context, game) {
+                gameOverDialogId: (context, game) {
                   return GameOverDialog(game: game as GalaxyDefenseGame);
                 },
               },
@@ -59,96 +62,163 @@ class _GameBoardPageState extends State<GameBoardPage> with TickerProviderStateM
             child: ValueListenableBuilder<int>(
               valueListenable: game.playerHealthNotifier,
               builder: (context, value, _) {
-                return Column(
-                  children: [
-                    Row(
-                      children: [
-                        Column(
+                return SizedBox(
+                  width: double.infinity,
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.stretch,
+                    children: [
+                      SizedBox(height: 4.0),
+                      Padding(
+                        padding: const EdgeInsets.symmetric(horizontal: 4.0),
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: [
-                            LinearIndicator(
-                              maxValue: game.playerShip.maxHealth,
-                              currentValue: game.playerShip.currentHealth,
-                              color: Colors.green,
+                            Expanded(
+                              flex: 6,
+                              child: LinearIndicator(
+                                maxValue: game.playerShip.maxHealth,
+                                currentValue: game.playerShip.currentHealth,
+                                color: Colors.green,
+                              ),
                             ),
-                            SizedBox(height: 6.0),
-                            LinearIndicator(
-                              maxValue: game.playerShip.maxShield,
-                              currentValue: game.playerShip.currentShield,
-                              color: Colors.blue,
+                            SizedBox(width: 10.0),
+                            Expanded(
+                              flex: 2,
+                              child: ValueListenableBuilder<int>(
+                                valueListenable: game.tokensNotifier,
+                                builder: (context, tokens, _) {
+                                  return Row(
+                                    children: [
+                                      Icon(Icons.token_rounded, size: 20.0),
+                                      SizedBox(width: 4.0),
+                                      Text('$tokens', style: const TextStyle(color: Colors.white, fontSize: 16)),
+                                    ],
+                                  );
+                                },
+                              ),
+                            ),
+                            Expanded(
+                              flex: 2,
+                              child: ValueListenableBuilder<int>(
+                                valueListenable: game.creditsNotifier,
+                                builder: (context, credits, _) {
+                                  return Row(
+                                    children: [
+                                      HugeIcon(icon: HugeIcons.strokeRoundedCProgramming, size: 20.0),
+                                      SizedBox(width: 4.0),
+                                      Text('$credits', style: const TextStyle(color: Colors.white, fontSize: 16)),
+                                    ],
+                                  );
+                                },
+                              ),
+                            ),
+                            Expanded(
+                              flex: 2,
+                              child: ValueListenableBuilder<int>(
+                                valueListenable: game.beskarNotifier,
+                                builder: (context, beskar, _) {
+                                  return Row(
+                                    children: [
+                                      HugeIcon(icon: HugeIcons.strokeRoundedBitcoinCpu, size: 20.0),
+                                      SizedBox(width: 4.0),
+                                      Text('$beskar', style: const TextStyle(color: Colors.white, fontSize: 16)),
+                                    ],
+                                  );
+                                },
+                              ),
                             ),
                           ],
                         ),
-                        Column(
-                          children: [
-                            Row(
-                              children: [
-                                ValueListenableBuilder<int>(
-                                  valueListenable: game.xpNotifier,
-                                  builder: (context, xp, _) {
-                                    return Text('$xp XP', style: const TextStyle(color: Colors.white, fontSize: 16));
-                                  },
-                                ),
-                                ValueListenableBuilder<int>(
-                                  valueListenable: game.creditsNotifier,
-                                  builder: (context, credits, _) {
-                                    return Text('Credits: $credits', style: const TextStyle(color: Colors.white, fontSize: 16));
-                                  },
-                                ),
-                              ],
-                            ),
-                            Row(
-                              children: [
-                                ValueListenableBuilder<int>(
-                                  valueListenable: game.killCountNotifier,
-                                  builder: (context, kills, _) {
-                                    return Text('$kills', style: const TextStyle(color: Colors.white, fontSize: 16));
-                                  },
-                                ),
-                                ValueListenableBuilder<int>(
-                                  valueListenable: game.beskarNotifier,
-                                  builder: (context, beskar, _) {
-                                    return Text('Beskar: $beskar', style: const TextStyle(color: Colors.white, fontSize: 16));
-                                  },
-                                ),
-                              ],
-                            ),
-                          ],
-                        ),
-                      ],
-                    ),
-                    Expanded(
-                      child: Column(
-                        children: [
-                          TabBar(
-                            controller: _cockpitTabController,
-                            indicatorColor: Colors.cyanAccent,
-                            labelColor: Colors.cyanAccent,
-                            tabs: const <Widget>[
-                              UpgradeTab(title: 'Angriff', hugeIcon: HugeIcons.strokeRoundedRocket),
-                              UpgradeTab(title: 'Verteidigung', hugeIcon: HugeIcons.strokeRoundedShield02),
-                            ],
-                          ),
-                          Expanded(
-                            child: TabBarView(
-                              controller: _cockpitTabController,
-                              children: <Widget>[
-                                CockpitUpgradeGridView(
-                                  upgradeCards: [
-                                    CockpitUpgradeCard(title: 'Projektilschaden', currentValue: 1.0, nextValue: 2.0, upgradeCost: 10),
-                                  ],
-                                ),
-                                CockpitUpgradeGridView(
-                                  upgradeCards: [
-                                    CockpitUpgradeCard(title: 'Hülle', currentValue: 5.0, nextValue: 10.0, upgradeCost: 20),
-                                  ],
-                                ),
-                              ],
-                            ),
-                          ),
-                        ],
                       ),
-                    ),
-                  ],
+                      SizedBox(height: 3.0),
+                      Padding(
+                        padding: const EdgeInsets.symmetric(horizontal: 4.0),
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            Expanded(
+                              flex: 6,
+                              child: LinearIndicator(
+                                maxValue: game.playerShip.maxShield,
+                                currentValue: game.playerShip.currentShield,
+                                color: Colors.blue,
+                              ),
+                            ),
+                            SizedBox(width: 10.0),
+                            Expanded(
+                              flex: 2,
+                              child: ValueListenableBuilder<int>(
+                                valueListenable: game.killCountNotifier,
+                                builder: (context, kills, _) {
+                                  return Row(
+                                    children: [
+                                      HugeIcon(icon: HugeIcons.strokeRoundedAlien01, size: 20.0),
+                                      SizedBox(width: 4.0),
+                                      Text('$kills', style: const TextStyle(color: Colors.white, fontSize: 16)),
+                                    ],
+                                  );
+                                },
+                              ),
+                            ),
+                            Expanded(
+                              flex: 2,
+                              child: ValueListenableBuilder<int>(
+                                valueListenable: game.xpNotifier,
+                                builder: (context, xp, _) {
+                                  return Text('${t.translate('xp')} $xp', style: const TextStyle(color: Colors.white, fontSize: 16));
+                                },
+                              ),
+                            ),
+                            Expanded(flex: 2, child: SizedBox()),
+                          ],
+                        ),
+                      ),
+                      Expanded(
+                        child: Column(
+                          children: [
+                            TabBar(
+                              controller: _cockpitTabController,
+                              indicatorColor: Colors.cyanAccent,
+                              labelColor: Colors.cyanAccent,
+                              tabs: <Widget>[
+                                UpgradeTab(title: t.translate('attack'), hugeIcon: HugeIcons.strokeRoundedRocket),
+                                UpgradeTab(title: t.translate('defense'), hugeIcon: HugeIcons.strokeRoundedShield02),
+                              ],
+                            ),
+                            Expanded(
+                              child: TabBarView(
+                                controller: _cockpitTabController,
+                                children: <Widget>[
+                                  CockpitUpgradeGridView(
+                                    upgradeCards: [
+                                      CockpitUpgradeCard(
+                                        title: t.translate('projectile_damage'),
+                                        currentValue: 1.0,
+                                        nextValue: 2.0,
+                                        upgradeCost: 10,
+                                        onPressed: () {},
+                                      ),
+                                    ],
+                                  ),
+                                  CockpitUpgradeGridView(
+                                    upgradeCards: [
+                                      CockpitUpgradeCard(
+                                        title: t.translate('covering'),
+                                        currentValue: 5.0,
+                                        nextValue: 10.0,
+                                        upgradeCost: 20,
+                                        onPressed: () {},
+                                      ),
+                                    ],
+                                  ),
+                                ],
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                    ],
+                  ),
                 );
               },
             ),
@@ -164,11 +234,13 @@ class GalaxyDefenseGame extends FlameGame with HasCollisionDetection {
   late AttackLine attackLine;
 
   int experiencePoints = 0;
+  int tokens = 0;
   int credits = 0;
   int beskar = 0;
   int enemiesDestroyed = 0;
 
   final ValueNotifier<int> xpNotifier = ValueNotifier<int>(0);
+  final ValueNotifier<int> tokensNotifier = ValueNotifier<int>(0);
   final ValueNotifier<int> creditsNotifier = ValueNotifier<int>(0);
   final ValueNotifier<int> beskarNotifier = ValueNotifier<int>(0);
   final ValueNotifier<int> killCountNotifier = ValueNotifier<int>(0);
@@ -215,11 +287,13 @@ class GalaxyDefenseGame extends FlameGame with HasCollisionDetection {
 
   void onEnemyDestroyed() {
     experiencePoints += 10;
+    tokens += 2;
     credits += 2;
     beskar++;
     enemiesDestroyed++;
 
     xpNotifier.value = experiencePoints;
+    tokensNotifier.value = tokens;
     creditsNotifier.value = credits;
     beskarNotifier.value = beskar;
     killCountNotifier.value = enemiesDestroyed;
@@ -227,11 +301,13 @@ class GalaxyDefenseGame extends FlameGame with HasCollisionDetection {
 
   void resetGame() {
     experiencePoints = 0;
+    tokens = 0;
     credits = 0;
     beskar = 0;
     enemiesDestroyed = 0;
 
     xpNotifier.value = 0;
+    tokensNotifier.value = 0;
     creditsNotifier.value = 0;
     beskarNotifier.value = 0;
     killCountNotifier.value = 0;

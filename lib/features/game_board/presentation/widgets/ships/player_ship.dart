@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:galaxy_defense/features/game_board/presentation/widgets/ships/ship.dart';
 
+import '../../../../../core/consts/dialog_consts.dart';
 import '../game_elements/projectile_shot.dart';
 import 'normal_enemy.dart';
 
@@ -57,7 +58,7 @@ class PlayerShip extends Ship {
   void destroyShip() {
     super.destroyShip();
     game.pauseEngine();
-    game.overlays.add('GameOverDialog');
+    game.overlays.add(gameOverDialogId);
     // TODO Animationen hinzufügen
   }
 

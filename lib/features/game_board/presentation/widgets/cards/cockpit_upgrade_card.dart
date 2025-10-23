@@ -6,6 +6,7 @@ class CockpitUpgradeCard extends StatefulWidget {
   final num currentValue;
   final num nextValue;
   final int upgradeCost;
+  final VoidCallback onPressed;
 
   const CockpitUpgradeCard({
     super.key,
@@ -13,6 +14,7 @@ class CockpitUpgradeCard extends StatefulWidget {
     required this.currentValue,
     required this.nextValue,
     required this.upgradeCost,
+    required this.onPressed,
   });
 
   @override
@@ -43,9 +45,7 @@ class _CockpitUpgradeCardState extends State<CockpitUpgradeCard> {
             Expanded(
               flex: 2,
               child: OutlinedButton(
-                onPressed: () {
-                  // TODO Fertigkeit upgrade
-                },
+                onPressed: widget.onPressed,
                 style: OutlinedButton.styleFrom(
                   padding: EdgeInsets.zero,
                   side: BorderSide(color: Colors.cyanAccent),
@@ -80,11 +80,18 @@ class _CockpitUpgradeCardState extends State<CockpitUpgradeCard> {
                           ),
                         ],
                       ),
-                      AutoSizeText(
-                        '${widget.upgradeCost.toString()} Credits',
-                        style: const TextStyle(fontSize: 12.0, color: Colors.white),
-                        minFontSize: 10.0,
-                        overflow: TextOverflow.ellipsis,
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          AutoSizeText(
+                            widget.upgradeCost.toString(),
+                            style: const TextStyle(fontSize: 12.0, color: Colors.white),
+                            minFontSize: 10.0,
+                            overflow: TextOverflow.ellipsis,
+                          ),
+                          SizedBox(width: 4.0),
+                          Icon(Icons.token_rounded, size: 16.0, color: Colors.white),
+                        ],
                       ),
                     ],
                   ),

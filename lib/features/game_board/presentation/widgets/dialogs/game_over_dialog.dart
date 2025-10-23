@@ -1,5 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:galaxy_defense/features/game_board/presentation/widgets/buttons/game_button.dart';
+import 'package:hugeicons/hugeicons.dart';
 
+import '../../../../../core/consts/dialog_consts.dart';
+import '../../../../../l10n/app_localizations.dart';
 import '../../../../player/presentation/pages/main_page.dart';
 import '../../pages/game_board_page.dart';
 
@@ -10,6 +14,7 @@ class GameOverDialog extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final t = AppLocalizations.of(context);
     return Center(
       child: Container(
         padding: const EdgeInsets.all(24.0),
@@ -20,8 +25,8 @@ class GameOverDialog extends StatelessWidget {
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
-            const Text(
-              'GAME OVER',
+            Text(
+              t.translate('game_over'),
               style: TextStyle(
                 color: Colors.redAccent,
                 fontSize: 36,
@@ -29,41 +34,48 @@ class GameOverDialog extends StatelessWidget {
               ),
             ),
             const SizedBox(height: 20),
-            Text(
-              'Zerstörte Gegner: ${game.enemiesDestroyed}',
-              style: const TextStyle(color: Colors.white, fontSize: 18),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                HugeIcon(icon: HugeIcons.strokeRoundedAlien01, size: 20.0),
+                SizedBox(width: 4.0),
+                Text('${game.enemiesDestroyed}', style: const TextStyle(color: Colors.white, fontSize: 18.0)),
+                SizedBox(width: 24.0),
+                Text('${t.translate('xp')}: ${game.experiencePoints}', style: const TextStyle(color: Colors.white, fontSize: 18.0)),
+              ],
             ),
-            Text(
-              'Erfahrung: ${game.experiencePoints}',
-              style: const TextStyle(color: Colors.white, fontSize: 18),
-            ),
-            Text(
-              'Credits: ${game.credits}',
-              style: const TextStyle(color: Colors.white, fontSize: 18),
-            ),
-            Text(
-              'Beskar: ${game.beskar}',
-              style: const TextStyle(color: Colors.white, fontSize: 18),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                HugeIcon(icon: HugeIcons.strokeRoundedCProgramming, size: 20.0),
+                SizedBox(width: 4.0),
+                Text('${game.credits}', style: const TextStyle(color: Colors.white, fontSize: 18.0)),
+                SizedBox(width: 24.0),
+                HugeIcon(icon: HugeIcons.strokeRoundedBitcoinCpu, size: 20.0),
+                SizedBox(width: 4.0),
+                Text('${game.beskar}', style: const TextStyle(color: Colors.white, fontSize: 18.0)),
+              ],
             ),
             const SizedBox(height: 20),
             Row(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                ElevatedButton(
+                GameButton(
+                  text: t.translate('new_battle'),
                   onPressed: () {
-                    game.overlays.remove('GameOverDialog');
+                    game.overlays.remove(gameOverDialogId);
                     game.resetGame();
                   },
-                  child: const Text('Neues Spiel'),
                 ),
-                ElevatedButton(
+                SizedBox(width: 8.0),
+                GameButton(
+                  text: t.translate('home'),
                   onPressed: () {
                     Navigator.of(context).pushAndRemoveUntil(
                       MaterialPageRoute(builder: (context) => MainPage()),
                       (Route<dynamic> route) => false,
                     );
                   },
-                  child: const Text('Spiel beenden'),
                 ),
               ],
             ),

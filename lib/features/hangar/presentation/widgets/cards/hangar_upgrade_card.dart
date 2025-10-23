@@ -1,5 +1,8 @@
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:flutter/material.dart';
+import 'package:hugeicons/hugeicons.dart';
+
+import '../../../../../l10n/app_localizations.dart';
 
 class HangarUpgradeCard extends StatefulWidget {
   final String title;
@@ -24,6 +27,7 @@ class HangarUpgradeCard extends StatefulWidget {
 class _HangarUpgradeCardState extends State<HangarUpgradeCard> {
   @override
   Widget build(BuildContext context) {
+    final t = AppLocalizations.of(context);
     return Card(
       elevation: 4.0,
       child: Padding(
@@ -48,7 +52,7 @@ class _HangarUpgradeCardState extends State<HangarUpgradeCard> {
                             overflow: TextOverflow.ellipsis,
                           ),
                           Text(
-                            'Level: ${widget.level.toString()}',
+                            '${t.translate('level')}: ${widget.level.toString()}',
                             style: const TextStyle(fontSize: 14.0, color: Colors.grey),
                             overflow: TextOverflow.ellipsis,
                           ),
@@ -115,12 +119,26 @@ class _HangarUpgradeCardState extends State<HangarUpgradeCard> {
                       Padding(
                         padding: const EdgeInsets.symmetric(horizontal: 12.0),
                         child: AutoSizeText(
-                          'Upgraden für\n${widget.upgradeCost.toString()} Credits',
+                          t.translate('upgrade_for'),
                           style: const TextStyle(fontSize: 12.0, color: Colors.white),
                           minFontSize: 10.0,
                           overflow: TextOverflow.ellipsis,
                           textAlign: TextAlign.center,
                         ),
+                      ),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          AutoSizeText(
+                            widget.upgradeCost.toString(),
+                            style: const TextStyle(fontSize: 12.0, color: Colors.white),
+                            minFontSize: 10.0,
+                            overflow: TextOverflow.ellipsis,
+                            textAlign: TextAlign.center,
+                          ),
+                          SizedBox(width: 4.0),
+                          HugeIcon(icon: HugeIcons.strokeRoundedCProgramming, size: 16.0, color: Colors.white),
+                        ],
                       ),
                     ],
                   ),

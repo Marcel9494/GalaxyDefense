@@ -1,0 +1,18 @@
+const Map<String, String> de = {
+  'galaxy_defense': 'Galaxy Defense',
+  'xp': 'XP',
+  'level': 'Level',
+  'attack': 'Angriff',
+  'defense': 'Verteidigung',
+  'skills': 'Fähigkeiten',
+  'covering': 'Hülle',
+  'projectile_damage': 'Projektilschaden',
+  'upgrade_for': 'Upgrade für',
+  'game_over': 'GAME OVER',
+  'battle': 'Gefecht',
+  'new_battle': 'Neues Gefecht',
+  'home': 'Home',
+  'hangar': 'Hangar',
+  'ranking': 'Rangliste',
+  'shop': 'Shop',
+};

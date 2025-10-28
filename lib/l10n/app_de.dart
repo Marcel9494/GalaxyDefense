@@ -2,6 +2,8 @@ const Map<String, String> de = {
   'galaxy_defense': 'Galaxy Defense',
   'xp': 'XP',
   'level': 'Level',
+  'current_level': 'Aktl. Level',
+  'max_level_reached': 'Max. Level erreicht',
   'attack': 'Angriff',
   'defense': 'Verteidigung',
   'skills': 'Fähigkeiten',
@@ -15,4 +17,8 @@ const Map<String, String> de = {
   'hangar': 'Hangar',
   'ranking': 'Rangliste',
   'shop': 'Shop',
+  // Error Messages
+  'load_data_error': 'Fehler beim Laden der Daten.',
+  'load_player_error': 'Fehler beim Laden des Spielers. Probiere es bitte später erneut.',
+  'update_player_error': 'Fehler beim Updaten des Spielers. Probiere es bitte später erneut.',
 };

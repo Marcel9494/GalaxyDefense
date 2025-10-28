@@ -3,6 +3,7 @@ import 'package:flutter/services.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:galaxy_defense/core/consts/route_consts.dart';
 import 'package:galaxy_defense/features/player/presentation/pages/main_page.dart';
+import 'package:supabase_flutter/supabase_flutter.dart';
 
 import 'core/theme/theme_data.dart';
 import 'features/game_board/presentation/pages/game_board_page.dart';
@@ -14,6 +15,14 @@ void main() async {
     DeviceOrientation.portraitUp,
     DeviceOrientation.portraitDown,
   ]);
+
+  const supabaseUrl = String.fromEnvironment('SUPABASE_URL');
+  const supabaseKey = String.fromEnvironment('SUPABASE_KEY');
+
+  await Supabase.initialize(
+    url: supabaseUrl,
+    anonKey: supabaseKey,
+  );
   runApp(const MyApp());
 }
 

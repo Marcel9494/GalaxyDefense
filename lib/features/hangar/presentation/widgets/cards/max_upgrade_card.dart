@@ -1,30 +1,20 @@
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:flutter/material.dart';
-import 'package:hugeicons/hugeicons.dart';
 
 import '../../../../../l10n/app_localizations.dart';
 
-class HangarUpgradeCard extends StatefulWidget {
+class MaxUpgradeCard extends StatelessWidget {
   final String title;
   final int level;
   final num currentValue;
-  final num nextValue;
-  final int upgradeCost;
 
-  const HangarUpgradeCard({
+  const MaxUpgradeCard({
     super.key,
     required this.title,
     required this.level,
     required this.currentValue,
-    required this.nextValue,
-    required this.upgradeCost,
   });
 
-  @override
-  State<HangarUpgradeCard> createState() => _HangarUpgradeCardState();
-}
-
-class _HangarUpgradeCardState extends State<HangarUpgradeCard> {
   @override
   Widget build(BuildContext context) {
     final t = AppLocalizations.of(context);
@@ -46,13 +36,13 @@ class _HangarUpgradeCardState extends State<HangarUpgradeCard> {
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           AutoSizeText(
-                            widget.title,
+                            title,
                             style: const TextStyle(fontSize: 18.0),
                             minFontSize: 12.0,
                             overflow: TextOverflow.ellipsis,
                           ),
                           Text(
-                            '${t.translate('level')}: ${widget.level.toString()}',
+                            '${t.translate('current_level')}: ${level.toString()}',
                             style: const TextStyle(fontSize: 14.0, color: Colors.grey),
                             overflow: TextOverflow.ellipsis,
                           ),
@@ -76,20 +66,7 @@ class _HangarUpgradeCardState extends State<HangarUpgradeCard> {
                   Padding(
                     padding: const EdgeInsets.only(left: 8.0),
                     child: AutoSizeText(
-                      widget.currentValue.toString(),
-                      style: const TextStyle(fontSize: 18.0, color: Colors.white),
-                      minFontSize: 10.0,
-                      overflow: TextOverflow.ellipsis,
-                    ),
-                  ),
-                  Icon(
-                    Icons.keyboard_double_arrow_right_rounded,
-                    color: Colors.white,
-                  ),
-                  Padding(
-                    padding: const EdgeInsets.only(right: 8.0),
-                    child: AutoSizeText(
-                      widget.nextValue.toString(),
+                      currentValue.toString(),
                       style: const TextStyle(fontSize: 18.0, color: Colors.white),
                       minFontSize: 10.0,
                       overflow: TextOverflow.ellipsis,
@@ -101,9 +78,7 @@ class _HangarUpgradeCardState extends State<HangarUpgradeCard> {
             Expanded(
               flex: 1,
               child: OutlinedButton(
-                onPressed: () {
-                  // TODO Fertigkeit upgrade
-                },
+                onPressed: () {},
                 style: OutlinedButton.styleFrom(
                   padding: EdgeInsets.zero,
                   side: BorderSide(color: Colors.cyanAccent),
@@ -119,26 +94,13 @@ class _HangarUpgradeCardState extends State<HangarUpgradeCard> {
                       Padding(
                         padding: const EdgeInsets.symmetric(horizontal: 12.0),
                         child: AutoSizeText(
-                          t.translate('upgrade_for'),
+                          t.translate('max_level_reached'),
                           style: const TextStyle(fontSize: 12.0, color: Colors.white),
                           minFontSize: 10.0,
+                          maxLines: 2,
                           overflow: TextOverflow.ellipsis,
                           textAlign: TextAlign.center,
                         ),
-                      ),
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          AutoSizeText(
-                            widget.upgradeCost.toString(),
-                            style: const TextStyle(fontSize: 12.0, color: Colors.white),
-                            minFontSize: 10.0,
-                            overflow: TextOverflow.ellipsis,
-                            textAlign: TextAlign.center,
-                          ),
-                          SizedBox(width: 4.0),
-                          HugeIcon(icon: HugeIcons.strokeRoundedCProgramming, size: 16.0, color: Colors.white),
-                        ],
                       ),
                     ],
                   ),

@@ -4,7 +4,6 @@ import 'package:hugeicons/hugeicons.dart';
 
 import '../../../../../core/consts/dialog_consts.dart';
 import '../../../../../l10n/app_localizations.dart';
-import '../../../../player/presentation/pages/main_page.dart';
 import '../../pages/game_board_page.dart';
 
 class GameOverDialog extends StatelessWidget {
@@ -71,10 +70,10 @@ class GameOverDialog extends StatelessWidget {
                 GameButton(
                   text: t.translate('home'),
                   onPressed: () {
-                    Navigator.of(context).pushAndRemoveUntil(
+                    /* TODO Navigator.of(context).pushAndRemoveUntil(
                       MaterialPageRoute(builder: (context) => MainPage()),
                       (Route<dynamic> route) => false,
-                    );
+                    );*/
                   },
                 ),
               ],

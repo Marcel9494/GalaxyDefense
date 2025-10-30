@@ -5,8 +5,13 @@ import 'package:galaxy_defense/core/consts/route_consts.dart';
 import 'package:galaxy_defense/features/player/presentation/pages/main_page.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
+import 'core/page_arguments/game_board_arguments.dart';
+import 'core/page_arguments/home_arguments.dart';
+import 'core/page_arguments/main_arguments.dart';
 import 'core/theme/theme_data.dart';
 import 'features/game_board/presentation/pages/game_board_page.dart';
+import 'features/loading/presentation/pages/loading_page.dart';
+import 'features/player/presentation/pages/home_page.dart';
 import 'l10n/app_localizations.dart';
 
 void main() async {
@@ -44,10 +49,36 @@ class MyApp extends StatelessWidget {
         GlobalWidgetsLocalizations.delegate,
         GlobalCupertinoLocalizations.delegate,
       ],
-      home: const MainPage(),
-      routes: {
-        mainRoute: (context) => const MainPage(),
-        gameBoardRoute: (context) => const GameBoardPage(),
+      home: const LoadingPage(),
+      routes: {},
+      onGenerateRoute: (RouteSettings settings) {
+        switch (settings.name) {
+          case mainRoute:
+            final args = settings.arguments as MainArguments;
+            return MaterialPageRoute<String>(
+              builder: (context) => MainPage(
+                player: args.player,
+              ),
+              settings: settings,
+            );
+          case homeRoute:
+            final args = settings.arguments as HomeArguments;
+            return MaterialPageRoute<String>(
+              builder: (context) => HomePage(
+                player: args.player,
+              ),
+              settings: settings,
+            );
+          case gameBoardRoute:
+            final args = settings.arguments as GameBoardArguments;
+            return MaterialPageRoute<String>(
+              builder: (context) => GameBoardPage(
+                player: args.player,
+              ),
+              settings: settings,
+            );
+        }
+        return null;
       },
     );
   }

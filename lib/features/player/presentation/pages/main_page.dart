@@ -5,10 +5,16 @@ import 'package:galaxy_defense/features/ranking/presentation/pages/ranking_page.
 import 'package:hugeicons/hugeicons.dart';
 
 import '../../../../l10n/app_localizations.dart';
+import '../../../data/models/player/player_model.dart';
 import '../../../shop/presentation/pages/shop_page.dart';
 
 class MainPage extends StatefulWidget {
-  const MainPage({super.key});
+  final Player player;
+
+  const MainPage({
+    super.key,
+    required this.player,
+  });
 
   @override
   State<MainPage> createState() => _MainPageState();
@@ -16,12 +22,6 @@ class MainPage extends StatefulWidget {
 
 class _MainPageState extends State<MainPage> {
   int _selectedPageIndex = 0;
-  static const List<Widget> _pages = <Widget>[
-    HomePage(),
-    HangarPage(),
-    RankingPage(),
-    ShopPage(),
-  ];
 
   void _onItemTapped(int index) {
     setState(() {
@@ -33,10 +33,68 @@ class _MainPageState extends State<MainPage> {
   Widget build(BuildContext context) {
     final t = AppLocalizations.of(context);
     return Scaffold(
-      appBar: AppBar(
-        title: Text(t.translate('galaxy_defense')),
+      body: SafeArea(
+        child: Column(
+          children: [
+            Container(
+              padding: const EdgeInsets.fromLTRB(24.0, 8.0, 16.0, 8.0),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.start,
+                children: [
+                  Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 8.0),
+                    child: Row(
+                      children: [
+                        HugeIcon(icon: HugeIcons.strokeRoundedCProgramming, color: Colors.amber, size: 20.0),
+                        const SizedBox(width: 4.0),
+                        Text(widget.player.availableCredits.toString(), style: const TextStyle(fontSize: 14.0)),
+                      ],
+                    ),
+                  ),
+                  Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 8.0),
+                    child: Row(
+                      children: [
+                        HugeIcon(icon: HugeIcons.strokeRoundedBitcoinCpu, color: Colors.amber, size: 20.0),
+                        const SizedBox(width: 4.0),
+                        Text(widget.player.availableBeskar.toString(), style: const TextStyle(fontSize: 14.0)),
+                      ],
+                    ),
+                  ),
+                  Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 8.0),
+                    child: Row(
+                      children: [
+                        Icon(Icons.star_rounded, color: Colors.lightBlueAccent, size: 20.0),
+                        const SizedBox(width: 4.0),
+                        Text(widget.player.gainedXp.toString(), style: const TextStyle(fontSize: 14.0)),
+                      ],
+                    ),
+                  ),
+                  Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 8.0),
+                    child: Row(
+                      children: [
+                        Icon(Icons.military_tech_rounded, color: Colors.green, size: 20.0),
+                        const SizedBox(width: 4.0),
+                        Text(widget.player.playerLevel.toString(), style: const TextStyle(fontSize: 14.0)),
+                      ],
+                    ),
+                  ),
+                ],
+              ),
+            ),
+            Expanded(
+              child: <Widget>[
+                HomePage(player: widget.player),
+                HangarPage(),
+                RankingPage(),
+                ShopPage(),
+              ].elementAt(_selectedPageIndex),
+            ),
+          ],
+        ),
       ),
-      body: _pages.elementAt(_selectedPageIndex),
       bottomNavigationBar: BottomNavigationBar(
         type: BottomNavigationBarType.fixed,
         iconSize: 20.0,

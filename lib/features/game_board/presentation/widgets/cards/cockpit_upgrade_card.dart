@@ -7,6 +7,7 @@ class CockpitUpgradeCard extends StatefulWidget {
   final num nextValue;
   final int upgradeCost;
   final VoidCallback onPressed;
+  final int currentTokens;
 
   const CockpitUpgradeCard({
     super.key,
@@ -15,6 +16,7 @@ class CockpitUpgradeCard extends StatefulWidget {
     required this.nextValue,
     required this.upgradeCost,
     required this.onPressed,
+    required this.currentTokens,
   });
 
   @override
@@ -48,7 +50,7 @@ class _CockpitUpgradeCardState extends State<CockpitUpgradeCard> {
                 onPressed: widget.onPressed,
                 style: OutlinedButton.styleFrom(
                   padding: EdgeInsets.zero,
-                  side: BorderSide(color: Colors.cyanAccent),
+                  side: BorderSide(color: widget.upgradeCost <= widget.currentTokens ? Colors.cyanAccent : Colors.grey),
                   shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(8.0),
                   ),
@@ -63,18 +65,18 @@ class _CockpitUpgradeCardState extends State<CockpitUpgradeCard> {
                         children: [
                           AutoSizeText(
                             widget.currentValue.toString(),
-                            style: const TextStyle(fontSize: 12.0, color: Colors.white),
+                            style: TextStyle(fontSize: 12.0, color: widget.upgradeCost <= widget.currentTokens ? Colors.white : Colors.grey),
                             minFontSize: 10.0,
                             overflow: TextOverflow.ellipsis,
                           ),
                           Icon(
                             Icons.keyboard_double_arrow_right_rounded,
-                            color: Colors.white,
+                            color: widget.upgradeCost <= widget.currentTokens ? Colors.white : Colors.grey,
                             size: 16.0,
                           ),
                           AutoSizeText(
                             widget.nextValue.toString(),
-                            style: const TextStyle(fontSize: 12.0, color: Colors.white),
+                            style: TextStyle(fontSize: 12.0, color: widget.upgradeCost <= widget.currentTokens ? Colors.white : Colors.grey),
                             minFontSize: 10.0,
                             overflow: TextOverflow.ellipsis,
                           ),
@@ -85,12 +87,12 @@ class _CockpitUpgradeCardState extends State<CockpitUpgradeCard> {
                         children: [
                           AutoSizeText(
                             widget.upgradeCost.toString(),
-                            style: const TextStyle(fontSize: 12.0, color: Colors.white),
+                            style: TextStyle(fontSize: 12.0, color: widget.upgradeCost <= widget.currentTokens ? Colors.white : Colors.grey),
                             minFontSize: 10.0,
                             overflow: TextOverflow.ellipsis,
                           ),
                           SizedBox(width: 4.0),
-                          Icon(Icons.token_rounded, size: 16.0, color: Colors.white),
+                          Icon(Icons.token_rounded, size: 16.0, color: widget.upgradeCost <= widget.currentTokens ? Colors.white : Colors.grey),
                         ],
                       ),
                     ],

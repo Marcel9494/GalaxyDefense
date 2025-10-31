@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:galaxy_defense/core/page_arguments/game_board_arguments.dart';
 
 import '../../../../core/consts/route_consts.dart';
+import '../../../../core/page_arguments/player_argument.dart';
 import '../../../../l10n/app_localizations.dart';
 import '../../../data/models/player/player_model.dart';
 
@@ -29,7 +29,7 @@ class _HomePageState extends State<HomePage> {
             onPressed: () => Navigator.pushNamed(
               context,
               gameBoardRoute,
-              arguments: GameBoardArguments(player: widget.player),
+              arguments: PlayerArgument(player: widget.player),
             ),
             child: Text(t.translate('battle')),
           ),

@@ -17,6 +17,13 @@ const Map<String, String> de = {
   'hangar': 'Hangar',
   'ranking': 'Rangliste',
   'shop': 'Shop',
+  'settings': 'Einstellungen',
+  'sound': 'Ton',
+  'legal': 'Rechtliches',
+  'privacy_policy': 'Datenschutzerklärung',
+  'credits': 'Credits',
+  'imprint': 'Impressum',
+  'above_galaxy_defense': 'Über Galaxy Defense',
   // Error Messages
   'load_data_error': 'Fehler beim Laden der Daten.',
   'load_player_error': 'Fehler beim Laden des Spielers. Probiere es bitte später erneut.',

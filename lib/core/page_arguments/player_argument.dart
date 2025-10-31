@@ -1,7 +1,7 @@
 import '../../features/data/models/player/player_model.dart';
 
-class HomeArguments {
+class PlayerArgument {
   final Player player;
 
-  HomeArguments({required this.player});
+  PlayerArgument({required this.player});
 }

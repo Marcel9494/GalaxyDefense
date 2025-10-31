@@ -3,15 +3,17 @@ import 'package:flutter/services.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:galaxy_defense/core/consts/route_consts.dart';
 import 'package:galaxy_defense/features/player/presentation/pages/main_page.dart';
+import 'package:galaxy_defense/features/settings/presentation/pages/above_galaxy_defense_page.dart';
+import 'package:galaxy_defense/features/settings/presentation/pages/credits_page.dart';
+import 'package:galaxy_defense/features/settings/presentation/pages/imprint_page.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
-import 'core/page_arguments/game_board_arguments.dart';
-import 'core/page_arguments/home_arguments.dart';
-import 'core/page_arguments/main_arguments.dart';
+import 'core/page_arguments/player_argument.dart';
 import 'core/theme/theme_data.dart';
 import 'features/game_board/presentation/pages/game_board_page.dart';
 import 'features/loading/presentation/pages/loading_page.dart';
 import 'features/player/presentation/pages/home_page.dart';
+import 'features/settings/presentation/pages/settings_page.dart';
 import 'l10n/app_localizations.dart';
 
 void main() async {
@@ -50,11 +52,15 @@ class MyApp extends StatelessWidget {
         GlobalCupertinoLocalizations.delegate,
       ],
       home: const LoadingPage(),
-      routes: {},
+      routes: {
+        imprintRoute: (context) => const ImprintPage(),
+        creditsRoute: (context) => const CreditsPage(),
+        aboutGalaxyDefenseRoute: (context) => const AboutGalaxyDefensePage(),
+      },
       onGenerateRoute: (RouteSettings settings) {
         switch (settings.name) {
           case mainRoute:
-            final args = settings.arguments as MainArguments;
+            final args = settings.arguments as PlayerArgument;
             return MaterialPageRoute<String>(
               builder: (context) => MainPage(
                 player: args.player,
@@ -62,7 +68,7 @@ class MyApp extends StatelessWidget {
               settings: settings,
             );
           case homeRoute:
-            final args = settings.arguments as HomeArguments;
+            final args = settings.arguments as PlayerArgument;
             return MaterialPageRoute<String>(
               builder: (context) => HomePage(
                 player: args.player,
@@ -70,9 +76,17 @@ class MyApp extends StatelessWidget {
               settings: settings,
             );
           case gameBoardRoute:
-            final args = settings.arguments as GameBoardArguments;
+            final args = settings.arguments as PlayerArgument;
             return MaterialPageRoute<String>(
               builder: (context) => GameBoardPage(
+                player: args.player,
+              ),
+              settings: settings,
+            );
+          case settingsRoute:
+            final args = settings.arguments as PlayerArgument;
+            return MaterialPageRoute<String>(
+              builder: (context) => SettingsPage(
                 player: args.player,
               ),
               settings: settings,
